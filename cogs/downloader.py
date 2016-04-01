@@ -41,7 +41,6 @@ class Downloader:
     @repo.command(name="add", pass_context=True)
     async def _repo_add(self, ctx, repo_name: str, repo_url: str):
         """Adds repo to available repo lists
-
         Warning: Adding 3RD Party Repositories is at your own
         Risk."""
         await self.bot.say("Type 'I agree' to confirm "
