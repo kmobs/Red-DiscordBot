@@ -24,23 +24,60 @@ class YahooFinance:
         query = urllib.parse.quote_plus(query)
         return self.URL % query
 
+    def __get_quote_list(self, *text):
+        pass
+
+
     """Commands section"""
     @commands.command(no_pm=True)
     async def quote(self, *text):
-        """ Does some fancy shit """
-#TODO: check symbol for validity
+        """
+            This will give back a small quote for a given stock symbol
+        """
+        response = "Name: %s\nPercent Change: %s\nLast Trade Price: $%s\n"
         result = None
         async with aiohttp.get(self.__build_url(text)) as r:
             result = await r.json()
 
-        print (result)
-        response = "Name: %s\nPercent Change: %s\nAsk: %s\nBid: %s\nDay's low: %s\nDay's high: %s\nPrevious close: %s\nOpen: %s\n50-day SMA: %s\n200-day SMA: %s\nStock exchange: %s\nDividend yield: %s\nExpected dividend pay date: %s\n"
         quotes = []
         count = int(result["query"]["count"])
         if count > 1:
             quotes = result["query"]["results"]["quote"]
         else:
             quotes.append(result["query"]["results"]["quote"])
+
+        for quote in quotes:
+            exchange = quote["StockExchange"]
+            if exchange is None:
+                await self.bot.say("Invalid stock symbol '%s'" % text)
+                return
+            pchange = quote["PercentChange"]
+            if pchange[0] == "+":
+                pchange = ":arrow_up: " + pchange
+            else:
+                pchange = ":arrow_down: " + pchange
+            name = quote["Name"]
+            last_trade = quote["LastTradePriceOnly"]
+            await self.bot.say(response % (name,pchange,last_trade))
+
+
+    @commands.command(no_pm=True)
+    async def summary(self, *text):
+        """
+            This will give back a larger summary of data for a specific quote
+        """
+        response = "Name: %s\nPercent Change: %s\nLast Trade Price: $%s\nAsk: $%s\nBid: $%s\nDay's low: $%s\nDay's high: $%s\nPrevious close: $%s\nOpen: $%s\n50-day SMA: $%s\n200-day SMA: $%s\nStock exchange: %s\nDividend yield: %s%%\nExpected dividend pay date: %s\n"
+        result = None
+        async with aiohttp.get(self.__build_url(text)) as r:
+            result = await r.json()
+
+        quotes = []
+        count = int(result["query"]["count"])
+        if count > 1:
+            quotes = result["query"]["results"]["quote"]
+        else:
+            quotes.append(result["query"]["results"]["quote"])
+
         for quote in quotes:
             exchange = quote["StockExchange"]
             if exchange is None:
@@ -62,7 +99,8 @@ class YahooFinance:
             thdsma = quote["TwoHundreddayMovingAverage"]
             dyield = quote["DividendYield"]
             ddate = quote["ExDividendDate"]
-            await self.bot.say(response % (name,pchange,ask,bid,daylow,dayhigh,prevclose,open,fdsma,thdsma,exchange,dyield,ddate))
+            last_trade = quote["LastTradePriceOnly"]
+            await self.bot.say(response % (name,pchange,last_trade,ask,bid,daylow,dayhigh,prevclose,open,fdsma,thdsma,exchange,dyield,ddate))
 
 def setup(bot):
     bot.add_cog(YahooFinance(bot))
