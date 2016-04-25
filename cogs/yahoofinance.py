@@ -34,7 +34,7 @@ class YahooFinance:
         """
             This will give back a small quote for a given stock symbol
         """
-        response = "[ %s | %s | %s ]"
+        response = "%s [ %s | %s | %s ]"
         result = None
         async with aiohttp.get(self.__build_url(text)) as r:
             result = await r.json()
@@ -52,14 +52,13 @@ class YahooFinance:
                 await self.bot.say("Invalid stock symbol '%s'" % text)
                 return
             pchange = quote["PercentChange"]
+            direction = ":arrow_down:"
             if pchange[0] == "+":
-                pchange = ":arrow_up: " + pchange
-            else:
-                pchange = ":arrow_down: " + pchange
+                direction = ":arrow_up: " + pchange
             name = quote["Name"]
             last_trade = quote["LastTradePriceOnly"]
             symbol = quote["Symbol"]
-            await self.bot.say(response % (symbol,pchange,last_trade))
+            await self.bot.say(response % (direction,symbol,pchange,last_trade))
 
         
     @commands.command(no_pm=True)
