@@ -26,7 +26,7 @@ class YahooFinance:
 
     def __get_quote_list(self, *text):
         pass
-
+       
 
     """Commands section"""
     @commands.command(no_pm=True)
@@ -34,7 +34,7 @@ class YahooFinance:
         """
             This will give back a small quote for a given stock symbol
         """
-        response = "Name: %s\nPercent Change: %s\nLast Trade Price: $%s\n"
+        response = "[ %s | %s | %s ]"
         result = None
         async with aiohttp.get(self.__build_url(text)) as r:
             result = await r.json()
@@ -58,9 +58,10 @@ class YahooFinance:
                 pchange = ":arrow_down: " + pchange
             name = quote["Name"]
             last_trade = quote["LastTradePriceOnly"]
-            await self.bot.say(response % (name,pchange,last_trade))
+            symbol = quote["Symbol"]
+            await self.bot.say(response % (symbol,pchange,last_trade))
 
-
+        
     @commands.command(no_pm=True)
     async def summary(self, *text):
         """
