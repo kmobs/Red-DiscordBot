@@ -51,10 +51,10 @@ class YahooFinance:
             if exchange is None:
                 await self.bot.say("Invalid stock symbol '%s'" % text)
                 return
-            pchange = quote["PercentChange"]
+            pchange = quote["Change_PercentChange"]
             direction = ":arrow_down:"
             if pchange[0] == "+":
-                direction = ":arrow_up: " + pchange
+                direction = ":arrow_up:"
             name = quote["Name"]
             last_trade = quote["LastTradePriceOnly"]
             symbol = quote["Symbol"]
@@ -83,7 +83,7 @@ class YahooFinance:
             if exchange is None:
                 await self.bot.say("Invalid stock symbol '%s'" % text)
                 return
-            pchange = quote["PercentChange"]
+            pchange = quote["Change_PercentChange"]
             if pchange[0] == "+":
                 pchange = ":arrow_up: " + pchange
             else:
