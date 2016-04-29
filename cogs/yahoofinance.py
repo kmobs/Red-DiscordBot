@@ -11,7 +11,7 @@ class YahooFinance:
     QUOTE_URL = "https://query.yahooapis.com/v1/public/yql?q=%s&env=http%%3A%%2F%%2Fdatatables.org%%2Falltables.env&format=json"
     QUOTE_QUERY = """select * from yahoo.finance.quotes where symbol in ("%s")"""
 
-    CHART_URL = "https://chart.finance.yahoo.com/t?s=%s&lang=en-US&region=US&width=300&height=180"
+    CHART_URL = "https://chart.yahoo.com/z?s=%s&t=%s&q=l&l=on&z=s&p=m10,m20,m50,m100"
 
     def __init__(self, bot):
         self.bot = bot
@@ -26,11 +26,17 @@ class YahooFinance:
         query = urllib.parse.quote_plus(query)
         return self.QUOTE_URL % query
 
-    def __build_chart_url(self, symbol):
+    def __build_chart_url(self, text):
         """
             Build urls for charts
         """
-        return self.CHART_URL % symbol
+        symbol = text[0]
+        timeframe="1d"
+        try:
+            timeframe = text[1]
+        except Exception as e:
+            pass
+        return self.CHART_URL % (symbol, timeframe)
 
     def __get_quote_list(self, *text):
         pass
