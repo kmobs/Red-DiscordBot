@@ -366,7 +366,6 @@ class Audio:
 
     async def _download_next(self, server, curr_dl, next_dl):
         """Checks to see if we need to download the next, and does.
-
         Both curr_dl and next_dl should already be started."""
         if curr_dl.song is None:
             # Only happens when the downloader thread hasn't initialized fully
@@ -1227,7 +1226,6 @@ class Audio:
     @playlist.command(pass_context=True, no_pm=True, name="queue")
     async def playlist_queue(self, ctx, url):
         """Adds a song to the playlist loop.
-
         Does NOT write to disk."""
         server = ctx.message.server
         if not self.voice_connected(server):
@@ -1310,7 +1308,6 @@ class Audio:
     @commands.command(pass_context=True, no_pm=True, name="queue")
     async def _queue(self, ctx, *, url):
         """Queues a song to play next. Extended functionality in `!help`
-
         If you use `queue` when one song is playing, your new song will get
             added to the song loop (if running). If you use `queue` when a
             playlist is running, it will temporarily be played next and will
